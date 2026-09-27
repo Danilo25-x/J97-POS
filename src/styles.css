@@ -1,0 +1,6 @@
+/* J'97 — Sistema de diseño. Orden importa: tokens → base → ui → layout → pages */
+@import './styles/tokens.css';
+@import './styles/base.css';
+@import './styles/ui.css';
+@import './components/Layout/layout.css';
+@import './styles/pages.css';

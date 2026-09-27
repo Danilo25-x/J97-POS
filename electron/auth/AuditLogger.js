@@ -1,0 +1,1 @@
+class AuditLogger{constructor(db){this.db=db}log(userId,action,entity=null,entityId=null,details={}){this.db.run('INSERT INTO audit_logs(user_id,action,entity,entity_id,details) VALUES(?,?,?,?,?)',[userId||null,action,entity,entityId,JSON.stringify(details||{})])}}module.exports=AuditLogger
