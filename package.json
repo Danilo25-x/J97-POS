@@ -1,6 +1,6 @@
 {
   "name": "j97-pos",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "private": true,
   "description": "J'97 - Sistema POS profesional para tienda",
   "main": "electron/main.js",
