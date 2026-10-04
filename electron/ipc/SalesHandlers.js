@@ -298,7 +298,10 @@ function registerSalesHandlers(ipcMain, db, authService) {
           }
         }
         db.run(
-          `UPDATE sales SET status='cancelled', cancel_reason=?, cancelled_by=?, cancelled_at=datetime('now')
+          // synced_at se reinicia a NULL: si la venta ya se había subido a
+          // Supabase, la cancelación debe volver a sincronizarse para que
+          // el respaldo en la nube no quede mostrando la venta como vigente.
+          `UPDATE sales SET status='cancelled', cancel_reason=?, cancelled_by=?, cancelled_at=datetime('now'), synced_at=NULL
            WHERE id=?`,
           [reason || null, userId, id]
         )

@@ -6,7 +6,8 @@ class SettingsService {
   static ALLOWED_KEYS = new Set([
     'store_name', 'store_nit', 'store_address', 'store_phone', 'store_email',
     'invoice_prefix', 'invoice_next', 'tax_rate', 'low_stock_threshold',
-    'backup_enabled', 'backup_days', 'tax_enabled', 'logo_path', 'theme', 'currency'
+    'backup_enabled', 'backup_days', 'tax_enabled', 'logo_path', 'theme', 'currency',
+    'supabase_url', 'supabase_anon_key', 'sync_enabled'
   ])
 
   getAll() {
@@ -51,6 +52,18 @@ class SettingsService {
       const n = Number(value)
       if (!Number.isInteger(n) || n < 0) throw new Error('El umbral de stock debe ser un entero no negativo')
       value = n
+    }
+
+    if (key === 'supabase_url') {
+      const v = String(value ?? '').trim()
+      if (v && !/^https:\/\/[a-z0-9.-]+\.supabase\.co\/?$/i.test(v)) {
+        throw new Error('La URL de Supabase no parece válida (debe terminar en .supabase.co)')
+      }
+      value = v.replace(/\/$/, '')
+    }
+
+    if (key === 'sync_enabled') {
+      value = String(value) === '1' || value === true ? '1' : '0'
     }
 
     this.db.run(

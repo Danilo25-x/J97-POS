@@ -67,6 +67,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getInventoryReport: ()     => invoke('reports:getInventoryReport'),
   },
 
+  sync: {
+    runNow:    ()   => invoke('sync:runNow'),
+    getStatus: ()   => invoke('sync:getStatus')
+  },
   settings: {
     getAll:  ()     => invoke('settings:getAll'),
     set:     (data) => invoke('settings:set', data),

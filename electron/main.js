@@ -13,10 +13,16 @@ const { registerCashHandlers }      = require('./ipc/CashHandlers')
 const { registerCustomerHandlers }  = require('./ipc/CustomerHandlers')
 const { registerReportHandlers }    = require('./ipc/ReportHandlers')
 const { registerDocumentHandlers }  = require('./ipc/DocumentHandlers')
+const { registerSyncHandlers }      = require('./ipc/SyncHandlers')
 
 const AuthService = require('./auth/AuthService')
 const ProductImageService = require('./media/ProductImageService')
+const SettingsService = require('./settings/SettingsService')
+const SupabaseSync = require('./sync/SupabaseSync')
 const { autoUpdater } = require('electron-updater')
+
+const SYNC_INTERVAL_MS = 20 * 60 * 1000 // 20 minutos
+let syncTimer = null
 
 protocol.registerSchemesAsPrivileged([
   {
@@ -180,6 +186,20 @@ async function bootstrap() {
   registerReportHandlers(ipcMain, db, authService)
   registerDocumentHandlers(ipcMain, db, app, authService)
 
+  // Respaldo en la nube (Supabase): opcional, se activa desde Ajustes.
+  // Un fallo aquí (sin internet, credenciales incompletas) nunca debe
+  // impedir que la app abra, por eso corre aparte y con su propio manejo
+  // de errores interno (ver SupabaseSync.runSync).
+  const settingsService = new SettingsService(db)
+  const sync = new SupabaseSync(db, app, productImageService)
+  registerSyncHandlers(ipcMain, authService, sync, settingsService)
+
+  const runBackgroundSync = () => {
+    sync.runSync(settingsService).catch(e => console.error('[Sync] Error inesperado:', e.message))
+  }
+  runBackgroundSync()
+  syncTimer = setInterval(runBackgroundSync, SYNC_INTERVAL_MS)
+
   console.log('[App] Bootstrap OK')
 }
 
@@ -233,5 +253,6 @@ app.whenReady().then(async () => {
 })
 
 app.on('window-all-closed', () => {
+  if (syncTimer) { clearInterval(syncTimer); syncTimer = null }
   if (process.platform !== 'darwin') { db?.close(); app.quit() }
 })
