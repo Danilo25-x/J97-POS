@@ -13,7 +13,7 @@ export default function Header() {
   const location = useLocation()
   const navigate  = useNavigate()
   const { logout } = useAuthStore()
-  const title = TITLES[location.pathname] || "J'97"
+  const title = TITLES[location.pathname] || "J97"
   const now = new Date().toLocaleDateString('es-CO', {
     weekday:'long', year:'numeric', month:'long', day:'numeric'
   })

@@ -120,3 +120,63 @@ test('con la sincronización desactivada en Ajustes, no intenta sincronizar', as
   assert.equal(result.ok, false)
   assert.equal(result.skipped, true)
 })
+
+// ── Restauración de emergencia ──────────────────────────────────
+
+function fakeRestoreDb(productCount) {
+  const inserted = { customers: [], cash_registers: [], products: [], product_variants: [], sales: [], sale_items: [], payments: [], credits: [], credit_payments: [], cash_expenses: [], cash_income: [] }
+  return {
+    inserted,
+    get: (sql) => {
+      if (/COUNT\(\*\) AS n FROM products/.test(sql)) return { n: productCount }
+      return null
+    },
+    all: () => [],
+    run: (sql, params) => {
+      for (const table of Object.keys(inserted)) {
+        if (new RegExp(`INSERT INTO ${table}\\b`).test(sql)) { inserted[table].push(params); return }
+      }
+      return {} // sqlite_sequence u otras sentencias auxiliares
+    },
+    // El wrapper real de la app EJECUTA la transacción de inmediato y
+    // devuelve lo que el callback retorne (no una función para llamar
+    // después). Esta prueba existe justamente porque una vez se llamó
+    // dos veces por error ("run is not a function").
+    transaction: (fn) => fn(),
+  }
+}
+
+test('restaurar desde la nube se niega si ya hay productos locales', async () => {
+  const db = fakeRestoreDb(3)
+  const sync = new SupabaseSync(db, {}, fakeImages({}))
+  const result = await sync.restoreFromCloud(fakeSettingsService())
+  assert.equal(result.ok, false)
+  assert.match(result.error, /instalación nueva y vacía/)
+})
+
+test('restaurar desde la nube en una base vacía inserta clientes, caja, productos y ventas', async () => {
+  const db = fakeRestoreDb(0)
+  const sync = new SupabaseSync(db, {}, fakeImages({}))
+  sync._getClient = () => ({
+    from: (table) => ({
+      select: () => ({
+        range: async () => ({
+          data: table === 'customers' ? [{ id: 1, name: 'Ana', document: '111', phone: '3000000000', updated_at: '2026-01-01' }]
+            : table === 'cash_registers' ? [{ id: 1, status: 'closed', opened_at: '2026-01-01' }]
+            : table === 'products' ? [{ id: 1, sku: 'A-1', name: 'Prod', updated_at: '2026-01-01' }]
+            : table === 'sales' ? [{ id: 1, invoice_number: 'F-1', created_at: '2026-01-01' }]
+            : [],
+          error: null,
+        }),
+      }),
+    }),
+    storage: { from: () => ({ download: async () => ({ data: null, error: null }) }) },
+  })
+
+  const result = await sync.restoreFromCloud(fakeSettingsService())
+  assert.equal(result.ok, true, result.error)
+  assert.equal(db.inserted.customers.length, 1)
+  assert.equal(db.inserted.cash_registers.length, 1)
+  assert.equal(db.inserted.products.length, 1)
+  assert.equal(db.inserted.sales.length, 1)
+})

@@ -4,6 +4,7 @@ import { useAuthStore } from '../../store/authStore'
 import { useSettingsStore } from '../../store/settingsStore'
 import Sprig from '../UI/Sprig'
 import logo from '../../assets/logo.png'
+import ThemeToggle from '../UI/ThemeToggle'
 import logoMark from '../../assets/logo-mark.png'
 
 const NAV = [
@@ -25,7 +26,7 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar__brand">
-        <img className="sidebar__logo" src={logo} alt={storeName || "J'97 Tienda de ropa"} />
+        <img className="sidebar__logo" src={logo} alt={storeName || "J97"} />
         <img className="sidebar__mark" src={logoMark} alt="" />
       </div>
 
@@ -46,6 +47,7 @@ export default function Sidebar() {
           <div className="sidebar__uname">{user?.name || 'Usuario'}</div>
           <div className="sidebar__role">{user?.role || 'empleado'}</div>
         </div>
+        <ThemeToggle className="sidebar__theme" />
         <button type="button" className="icon-btn sidebar__logout" onClick={handleLogout} title="Cerrar sesión" aria-label="Cerrar sesión">
           <LogOut size={18} />
         </button>

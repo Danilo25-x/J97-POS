@@ -1,25 +1,25 @@
 .app{display:flex;height:100vh;overflow:hidden;background:var(--canvas)}
 .main{flex:1;min-width:0;overflow-y:auto}
 
-.sidebar{position:relative;width:248px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;color:#fff;
-  background:radial-gradient(120% 55% at 50% 0%,#4b1e7a 0%,transparent 62%),linear-gradient(180deg,var(--plum-850),var(--plum-950))}
+.sidebar{position:relative;width:248px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;color:var(--on-dark);
+  background:radial-gradient(120% 55% at 50% 0%,rgba(194,154,46,.14) 0%,transparent 62%),linear-gradient(180deg,var(--plum-850),var(--plum-950))}
 .sidebar__brand{display:grid;place-items:center;padding:26px 20px 12px}
-.sidebar__logo{display:block;width:160px;height:auto}
-.sidebar__mark{display:none;width:46px;height:auto}
+.sidebar__logo{display:block;width:170px;height:auto}
+.sidebar__mark{display:none;width:50px;height:auto}
 .sidebar__nav{flex:1;display:flex;flex-direction:column;gap:4px;padding:16px 14px;overflow-y:auto}
-.nav-item{display:flex;align-items:center;gap:12px;height:46px;padding:0 14px;border-radius:13px;color:rgba(255,255,255,.74);font-weight:550;font-size:14px;text-decoration:none;transition:background-color .15s,color .15s}
+.nav-item{display:flex;align-items:center;gap:12px;height:46px;padding:0 14px;border-radius:13px;color:rgba(var(--cream-alpha),.74);font-weight:550;font-size:14px;text-decoration:none;transition:background-color .15s,color .15s}
 .nav-item svg{flex-shrink:0}
-.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
-.nav-item.active{color:#fff;background:linear-gradient(90deg,rgba(226,123,224,.24),rgba(130,72,176,.34));box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
-.nav-item.active svg{color:var(--blush)}
+.nav-item:hover{background:rgba(var(--cream-alpha),.07);color:var(--on-dark)}
+.nav-item.active{color:var(--on-dark);font-weight:700;background:var(--gold-grad);box-shadow:0 6px 14px -8px rgba(194,154,46,.45)}
+.nav-item.active svg{color:var(--on-dark)}
 .sidebar__sprig{position:absolute;right:-34px;bottom:96px;width:128px;opacity:.16;pointer-events:none}
-.sidebar__user{position:relative;display:flex;align-items:center;gap:10px;margin:12px;padding:10px 8px 10px 12px;border-radius:16px;background:rgba(255,255,255,.08)}
-.avatar{width:38px;height:38px;flex-shrink:0;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,var(--orchid),var(--plum-500));color:#fff;font-weight:700}
+.sidebar__user{position:relative;display:flex;align-items:center;gap:10px;margin:12px;padding:10px 8px 10px 12px;border-radius:16px;background:rgba(var(--cream-alpha),.08)}
+.avatar{width:38px;height:38px;flex-shrink:0;display:grid;place-items:center;border-radius:50%;background:var(--gold-grad);color:var(--ink);font-weight:800}
 .sidebar__uinfo{min-width:0;flex:1}
 .sidebar__uname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:650}
-.sidebar__role{font-size:12px;color:rgba(255,255,255,.66);text-transform:capitalize}
-.sidebar__logout{color:rgba(255,255,255,.72)}
-.sidebar__logout:hover{background:rgba(255,255,255,.12);color:#fff}
+.sidebar__role{font-size:12px;color:rgba(var(--cream-alpha),.66);text-transform:capitalize}
+.sidebar__logout{color:rgba(var(--cream-alpha),.72)}
+.sidebar__logout:hover{background:rgba(var(--cream-alpha),.12);color:var(--on-dark)}
 
 @media (max-width:1020px){
   .sidebar{width:78px}
@@ -32,6 +32,29 @@
   .page{padding:24px 22px 48px}
 }
 /* Contraste: el texto sobre superficies ciruela debe mantenerse claramente blanco. */
-.nav-item{color:rgba(255,255,255,.9)}
-.sidebar__role{color:rgba(255,255,255,.78)}
-.sidebar__logout{color:rgba(255,255,255,.86)}
+.nav-item{color:rgba(var(--cream-alpha),.9)}
+.sidebar__role{color:rgba(var(--cream-alpha),.78)}
+.sidebar__logout{color:rgba(var(--cream-alpha),.86)}
+
+/* iOS: 100vh incluye la barra de Safari; 100dvh usa la altura visible real */
+@supports (height:100dvh){.app{height:100dvh}}
+
+/* ── Móvil: barra de navegación inferior ─────────────────────── */
+@media (max-width:760px){
+  .app{flex-direction:column}
+  .main{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+  .sidebar{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:900;width:100%;
+    flex-direction:row;align-items:center;overflow:visible;
+    height:calc(68px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
+    border-top:1px solid var(--plum-800);background:var(--plum-900)}
+  .sidebar__brand,.sidebar__sprig,.sidebar__uinfo,.avatar{display:none}
+  .sidebar__nav{flex-direction:row;gap:2px;padding:6px;overflow-x:auto;scrollbar-width:none}
+  .sidebar__nav::-webkit-scrollbar{display:none}
+  .nav-item{flex-direction:column;justify-content:center;gap:3px;flex:0 0 auto;min-width:62px;height:56px;padding:0 6px;font-size:12px}
+  .nav-item span{display:block}
+  .sidebar__user{margin:0;padding:0 8px 0 0;background:none;flex-direction:row}
+}
+
+/* Interruptor de tema en la barra lateral */
+.sidebar__theme{color:rgba(var(--cream-alpha),.86)}
+.sidebar__theme:hover{background:rgba(var(--cream-alpha),.12);color:var(--on-dark)}

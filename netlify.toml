@@ -1,0 +1,11 @@
+# Zona Fit Orito POS — publicación en Netlify
+[build]
+  # No usar "npm run build": ese script también empaqueta la app de escritorio (Electron).
+  command = "npx vite build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # La versión web no necesita Electron ni SQLite nativo: se omiten sus instalaciones pesadas.
+  NPM_FLAGS = "--ignore-scripts"
+  ELECTRON_SKIP_BINARY_DOWNLOAD = "1"

@@ -48,7 +48,7 @@ export default function PaymentModal({ total, onConfirm, onClose }) {
     onConfirm({
       payments: [{ method, amount, reference: ref || null }],
       notes,
-      customerId: method === 'credito' ? Number(customerId) : null,
+      customerId: method === 'credito' ? customerId : null,   // el id es un UUID (texto): no se convierte a número
       installments: method === 'credito' ? Number(installments) : null,
       financingPct: ['credito', 'sistecredito'].includes(method) ? rate : 0,
     })
@@ -88,7 +88,7 @@ export default function PaymentModal({ total, onConfirm, onClose }) {
           {change > 0 && (
             <div className="notice notice--ok" style={{ marginTop: 10, justifyContent: 'space-between', alignItems: 'center' }}>
               <strong>Cambio a entregar</strong>
-              <strong style={{ fontFamily: 'var(--font-display)', fontSize: 22 }}>{fmt(change)}</strong>
+              <strong style={{ fontFamily: 'var(--font-display)', fontSize: 20 }}>{fmt(change)}</strong>
             </div>
           )}
         </div>

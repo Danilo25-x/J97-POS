@@ -7,7 +7,7 @@ import { Info, ImagePlus, X } from 'lucide-react'
 import { processImage } from '../../../utils/processImage'
 
 const EMPTY = {
-  sku: '', name: '', description: '', categoryId: '',
+  sku: '', name: '', categoryId: '',
   costPrice: '', salePrice: '', imageData: '', imagePath: ''
 }
 
@@ -44,7 +44,6 @@ export default function ProductFormModal({ isOpen, onClose, onSaved, product, ca
       setForm({
         sku: product.sku || '',
         name: product.name || '',
-        description: product.description || '',
         categoryId: product.category_id || '',
         costPrice: product.cost_price ?? '',
         salePrice: product.sale_price ?? '',
@@ -118,7 +117,7 @@ export default function ProductFormModal({ isOpen, onClose, onSaved, product, ca
   const handleSave = async () => {
     setError('')
     if (!form.name.trim()) { setError('El nombre es obligatorio'); return }
-    if (!form.sku.trim()) { setError('El SKU es obligatorio'); return }
+    if (!form.sku.trim()) { setError('El código es obligatorio'); return }
     if (!form.salePrice) { setError('El precio de venta es obligatorio'); return }
 
     setSaving(true)
@@ -126,8 +125,7 @@ export default function ProductFormModal({ isOpen, onClose, onSaved, product, ca
     const payload = {
       sku: form.sku.trim(),
       name: form.name.trim(),
-      description: form.description.trim() || null,
-      categoryId: form.categoryId ? Number(form.categoryId) : null,
+      categoryId: form.categoryId || null,
       costPrice: Number(form.costPrice) || 0,
       salePrice: Number(form.salePrice) || 0,
       variants: isEdit ? undefined : variants,
@@ -150,7 +148,7 @@ export default function ProductFormModal({ isOpen, onClose, onSaved, product, ca
 
       <div className="form-grid">
         <div className="field">
-          <label className="field__label" htmlFor="pf-sku">SKU *</label>
+          <label className="field__label" htmlFor="pf-sku">Código *</label>
           <input id="pf-sku" className="input" placeholder="CAM-001" value={form.sku} onChange={set('sku')} />
         </div>
         <div className="field">
@@ -159,10 +157,7 @@ export default function ProductFormModal({ isOpen, onClose, onSaved, product, ca
         </div>
       </div>
 
-      <div className="field">
-        <label className="field__label" htmlFor="pf-desc">Descripción</label>
-        <input id="pf-desc" className="input" placeholder="Descripción opcional" value={form.description} onChange={set('description')} />
-      </div>
+      
 
       <div className="field">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -217,7 +212,7 @@ export default function ProductFormModal({ isOpen, onClose, onSaved, product, ca
       <div className="field">
         <span className="field__label">Imagen del producto</span>
         <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
-          <div className="product-image-preview" style={{ width: 110, height: 110, borderRadius: 12, overflow: 'hidden', border: '1px solid var(--line, #ddd)', display: 'grid', placeItems: 'center', background: '#f7f7f7' }}>
+          <div className="product-image-preview" style={{ width: 110, height: 110, borderRadius: 12, overflow: 'hidden', border: '1px solid var(--line, #ddd)', display: 'grid', placeItems: 'center', background: 'var(--plum-50)' }}>
             {imagePreview
               ? <img src={imagePreview} alt="Vista previa del producto" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : <ImagePlus size={30} strokeWidth={1.4} />}
@@ -227,7 +222,7 @@ export default function ProductFormModal({ isOpen, onClose, onSaved, product, ca
             <input
               ref={fileRef}
               type="file"
-              accept="image/jpeg,image/png,image/webp"
+              accept="image/*" capture="environment"
               onChange={handleImageChange}
               style={{ display: 'none' }}
             />

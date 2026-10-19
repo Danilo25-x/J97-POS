@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, User, Lock } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
-import Sprig from '../../components/UI/Sprig'
 import logo from '../../assets/logo.png'
-import pkg from '../../../package.json'
 
 export default function LoginPage() {
   const [form, setForm] = useState({ username: '', password: '' })
@@ -15,8 +13,9 @@ export default function LoginPage() {
   const handleChange = e => { clearError(); setForm(f => ({ ...f, [e.target.name]: e.target.value })) }
   const handleSubmit = async e => {
     e.preventDefault()
-    if (!form.username || !form.password) return
-    const res = await login(form.username, form.password)
+    const email = form.username.trim()
+    if (!email || !form.password) return
+    const res = await login(email, form.password)
     if (res.ok) navigate('/')
   }
   const disabled = loading || !form.username || !form.password
@@ -24,10 +23,7 @@ export default function LoginPage() {
   return (
     <div className="login">
       <section className="login__brand">
-        <Sprig className="login__sprig login__sprig--l" />
-        <Sprig className="login__sprig login__sprig--r" />
-        <img className="login__logo" src={logo} alt="J'97 Tienda de ropa" />
-        <p className="login__tag">Tu estilo, nuestra pasión</p>
+        <img className="login__logo" src={logo} alt="J97" />
       </section>
 
       <section className="login__side">
@@ -39,11 +35,11 @@ export default function LoginPage() {
             {error && <div className="notice notice--bad" role="alert" style={{ marginBottom: 18 }}>{error}</div>}
 
             <div className="field">
-              <label className="field__label" htmlFor="username">Usuario</label>
+              <label className="field__label" htmlFor="username">Correo electrónico</label>
               <div className="search">
-                <User size={18} aria-hidden="true" />
-                <input id="username" className="input" name="username" value={form.username} onChange={handleChange}
-                  placeholder="Ingresa tu usuario" autoComplete="username" autoFocus />
+                <Mail size={18} aria-hidden="true" />
+                <input id="username" className="input" name="username" type="email" inputMode="email" value={form.username} onChange={handleChange}
+                  placeholder="tucorreo@ejemplo.com" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} autoFocus />
               </div>
             </div>
 
@@ -65,7 +61,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="login__foot" style={{ margin: '22px 0 0' }}>J'97 Tienda de Ropa · v{pkg.version}</p>
+          <p className="login__foot" style={{ margin: '22px 0 0' }}>J97</p>
         </div>
       </section>
     </div>

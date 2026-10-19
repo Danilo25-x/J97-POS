@@ -1,10 +1,12 @@
 import { Shirt, Maximize2 } from 'lucide-react'
+import { useImageSrc } from '../../data/useImageUrl'
 
 const TINTS = [['#efe6f7', '#d9c4ec'], ['#fbe6f1', '#f4c3dc'], ['#e9e4fb', '#cfc4f3'], ['#f6e4f8', '#e6bdee'], ['#e7eaf9', '#c9d1f2']]
 const hash = s => [...(s || '')].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7)
 
 // Miniatura reutilizable. Cuando se proporciona onClick, la imagen puede ampliarse.
-export default function ProductThumb({ name, src, size = 'md', onClick }) {
+export default function ProductThumb({ name, src: rawSrc, size = 'md', onClick }) {
+  const src = useImageSrc(rawSrc)
   const [a, b] = TINTS[hash(name) % TINTS.length]
   const content = src ? <img src={src} alt={`Imagen de ${name}`} /> : <Shirt strokeWidth={1.2} />
 

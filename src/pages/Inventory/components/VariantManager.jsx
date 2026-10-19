@@ -55,7 +55,7 @@ export default function VariantManager({ variants, onChange }) {
         <PrimaryButton size="sm" variant="soft" onClick={add}><Plus size={15} /> Añadir</PrimaryButton>
       </div>
       {error && <p className="field__error" style={{ marginTop: 7 }}>{error}</p>}
-      {imagePreview && <div style={{ marginTop: 8, display:'flex', alignItems:'center', gap:8, fontSize:12, color:'var(--muted)' }}><img src={imagePreview} alt="Vista previa de variante" style={{ width:38, height:38, objectFit:'cover', borderRadius:7 }} /> Imagen de variante seleccionada</div>}
+      {imagePreview && <div style={{ marginTop: 8, display:'flex', alignItems:'center', gap:8, fontSize: 12, color:'var(--muted)' }}><img src={imagePreview} alt="Vista previa de variante" style={{ width:38, height:38, objectFit:'cover', borderRadius:7 }} /> Imagen de variante seleccionada</div>}
       {variants.length === 0 ? (
         <div className="dashed">Sin variantes aún</div>
       ) : (

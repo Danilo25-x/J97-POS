@@ -1,23 +1,21 @@
 // src/pages/Settings/SettingsPage.jsx
 import { useEffect, useState } from 'react'
-import { Store, Receipt, Boxes, DatabaseBackup, Check, Upload, ShieldCheck, LockKeyhole, CloudUpload, RefreshCw } from 'lucide-react'
+import { Store, Receipt, Boxes, DatabaseBackup, Check, Upload, ShieldCheck, LockKeyhole } from 'lucide-react'
 import PageContainer from '../../components/UI/PageContainer'
 import PrimaryButton from '../../components/UI/PrimaryButton'
 import Toast from '../../components/UI/Toast'
 import { useSettingsStore } from '../../store/settingsStore'
 
 const FIELDS = [
-  { key: 'store_name',    label: 'Nombre del local',          placeholder: "J'97",             group: 'Negocio' },
+  { key: 'store_name',    label: 'Nombre del local',          placeholder: "J97",             group: 'Negocio' },
   { key: 'store_nit',     label: 'NIT / Identificación',      placeholder: '900.123.456-7',    group: 'Negocio' },
   { key: 'store_address', label: 'Dirección',                 placeholder: 'Calle 10 # 5-20',  group: 'Negocio' },
   { key: 'store_phone',   label: 'Teléfono',                  placeholder: '300 123 4567',     group: 'Negocio' },
   { key: 'store_email',   label: 'Correo electrónico',        placeholder: 'tienda@email.com', group: 'Negocio' },
-  { key: 'invoice_prefix', label: 'Prefijo de factura',       placeholder: 'J97',              group: 'Facturación' },
+  { key: 'invoice_prefix', label: 'Prefijo de factura',       placeholder: 'ZF',              group: 'Facturación' },
   { key: 'invoice_next',  label: 'Próximo número de factura', placeholder: '1',                group: 'Facturación', type: 'number' },
   { key: 'tax_rate',      label: 'Tasa de impuesto (%)',      placeholder: '0',                group: 'Facturación', type: 'number' },
   { key: 'low_stock_threshold', label: 'Alerta de stock bajo (unidades)', placeholder: '5',  group: 'Inventario', type: 'number' },
-  { key: 'supabase_url',       label: 'URL del proyecto Supabase',  placeholder: 'https://xxxxx.supabase.co', group: 'Nube' },
-  { key: 'supabase_anon_key',  label: 'Llave "anon" de Supabase',   placeholder: 'eyJhbGciOi...',             group: 'Nube', type: 'password' },
 ]
 
 const SECTIONS = [
@@ -26,7 +24,6 @@ const SECTIONS = [
   { key: 'Facturación', label: 'Facturación',        icon: Receipt,        desc: 'Numeración e impuestos de las facturas.' },
   { key: 'Inventario',  label: 'Inventario',         icon: Boxes,          desc: 'Cuándo avisar que un producto se está agotando.' },
   { key: 'Respaldo',    label: 'Copia de seguridad', icon: DatabaseBackup, desc: 'Protege la información de tu negocio.' },
-  { key: 'Nube',        label: 'Respaldo en la nube', icon: CloudUpload,   desc: 'Sube una copia de productos y ventas a Supabase cuando haya internet.' },
 ]
 
 export default function SettingsPage() {
@@ -38,13 +35,10 @@ export default function SettingsPage() {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [changingPassword, setChangingPassword] = useState(false)
-  const [syncing, setSyncing]   = useState(false)
-  const [syncStatus, setSyncStatus] = useState(null)
   const loadSettings = useSettingsStore(s => s.loadSettings)
 
   useEffect(() => {
     window.electronAPI.settings.getAll().then(r => { if (r.ok) setSettings(r.data) })
-    window.electronAPI.sync.getStatus().then(r => { if (r.ok) setSyncStatus(r.data) })
   }, [])
 
   const notify = (text, type = 'ok') => {
@@ -124,21 +118,6 @@ export default function SettingsPage() {
     } else if (!r.cancelled) notify(r.error || 'Error al restaurar la copia', 'error')
   }
 
-  const toggleSync = async (checked) => {
-    const r = await window.electronAPI.settings.set({ key: 'sync_enabled', value: checked ? '1' : '0' })
-    if (r.ok) setSettings(s => ({ ...s, sync_enabled: checked ? '1' : '0' }))
-    else notify(r.error || 'No se pudo cambiar la sincronización', 'error')
-  }
-
-  const handleSyncNow = async () => {
-    setSyncing(true)
-    const r = await window.electronAPI.sync.runNow()
-    setSyncing(false)
-    setSyncStatus(r)
-    if (r.ok) notify(`Sincronizado: ${r.products} productos, ${r.variants} variantes, ${r.sales} ventas`)
-    else notify(r.reason || r.error || 'No se pudo sincronizar', 'error')
-  }
-
   const current = SECTIONS.find(s => s.key === section)
   const fields = FIELDS.filter(f => f.group === section)
 
@@ -155,7 +134,7 @@ export default function SettingsPage() {
         </nav>
 
         <section className="card">
-          <div className="section-title" style={{ marginBottom: 4 }}><h2 style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 600 }}>{current.label}</h2></div>
+          <div className="section-title" style={{ marginBottom: 4 }}><h2 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 600 }}>{current.label}</h2></div>
           <p className="page__sub" style={{ marginBottom: 22 }}>{current.desc}</p>
 
           {section === 'Seguridad' ? (
@@ -198,44 +177,6 @@ export default function SettingsPage() {
                   {changingPassword ? 'Actualizando...' : <><LockKeyhole size={18} /> Cambiar contraseña</>}
                 </PrimaryButton>
               </div>
-            </>
-          ) : section === 'Nube' ? (
-            <>
-              <div className="notice notice--info" style={{ marginBottom: 18 }}>
-                <ShieldCheck size={18} /> <span>Solo es un respaldo: tu computador sigue siendo el único lugar donde se procesan ventas. Si no hay internet, la app sigue funcionando igual y sincroniza después.</span>
-              </div>
-              <div className="form-grid">
-                {fields.map(f => (
-                  <div className="field" key={f.key}>
-                    <label className="field__label" htmlFor={f.key}>{f.label}</label>
-                    <input id={f.key} className="input" type={f.type || 'text'} value={settings[f.key] || ''} placeholder={f.placeholder}
-                      onChange={e => setSettings(s => ({ ...s, [f.key]: e.target.value }))} />
-                  </div>
-                ))}
-              </div>
-              <div className="field" style={{ marginTop: 4 }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-                  <input type="checkbox" checked={settings.sync_enabled === '1'} onChange={e => toggleSync(e.target.checked)} />
-                  Activar sincronización automática (cada 20 minutos, si hay internet)
-                </label>
-              </div>
-              <div className="settings__foot" style={{ gap: 10, display: 'flex', flexWrap: 'wrap' }}>
-                <PrimaryButton onClick={saveSection} disabled={saving}>
-                  {saved ? <><Check size={18} /> Guardado</> : saving ? 'Guardando...' : 'Guardar credenciales'}
-                </PrimaryButton>
-                <PrimaryButton variant="soft" onClick={handleSyncNow} disabled={syncing}>
-                  <RefreshCw size={16} /> {syncing ? 'Sincronizando...' : 'Sincronizar ahora'}
-                </PrimaryButton>
-              </div>
-              {syncStatus && (
-                <p className="page__sub" style={{ marginTop: 14 }}>
-                  {syncStatus.skipped
-                    ? syncStatus.reason
-                    : syncStatus.ok
-                      ? `Última sincronización: ${syncStatus.at ? new Date(syncStatus.at).toLocaleString('es-CO') : '—'} · ${syncStatus.products} productos, ${syncStatus.variants} variantes, ${syncStatus.sales} ventas`
-                      : `Último intento falló: ${syncStatus.errors?.join(', ') || 'error desconocido'}`}
-                </p>
-              )}
             </>
           ) : section !== 'Respaldo' ? (
             <>

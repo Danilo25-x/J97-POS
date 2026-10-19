@@ -1,39 +1,68 @@
-/* Fuentes empaquetadas (la app funciona sin internet) */
-@font-face{font-family:'Playfair Display';font-style:normal;font-weight:400 900;font-display:swap;src:url('../assets/fonts/playfair-display.woff2') format('woff2')}
-@font-face{font-family:'Playfair Display';font-style:italic;font-weight:400 900;font-display:swap;src:url('../assets/fonts/playfair-display-italic.woff2') format('woff2')}
-@font-face{font-family:'Instrument Sans';font-style:normal;font-weight:400 700;font-display:swap;src:url('../assets/fonts/instrument-sans.woff2') format('woff2')}
+/* J97 — tokens de marca (ciruela y orquídea, del logo).
+   Tema oscuro por defecto; tema claro con [data-theme="light"].
+   Nombres --plum-* y --orchid/--blush/--lavender se mantienen para los componentes:
+   "plum" = escala de marca. El texto sobre el botón de marca es blanco (8.2:1). */
+@font-face{font-family:'Montserrat Variable';src:local('Montserrat');font-display:swap}
 
-:root{
-  /* Ciruela (marca) */
-  --plum-950:#1d0a33; --plum-900:#280f44; --plum-850:#31134f; --plum-800:#3b1b5e;
+:root,
+:root[data-theme="dark"]{
+  color-scheme: dark;
+
+  /* Escala de marca fija (barra lateral y fondos de marca) */
+  --plum-950:#12061f; --plum-900:#1a0b2e; --plum-850:#211138; --plum-800:#2b1747;
+  /* Roles que cambian con el tema */
+  --plum-700:#e6b8f0; --plum-600:#7b3fb0; --plum-500:#a35fd0; --plum-400:#c48be8;
+  --plum-300:#5c3a80; --plum-200:#3a2757; --plum-100:#281740; --plum-50:#1f1131;
+
+  --orchid:#e27be0; --blush:#f4a6cf; --lavender:#cdbbe6;
+  --gold-grad:linear-gradient(135deg,#9a55d6,#7b3fb0 60%,#5f2c93);
+  --on-gold:#ffffff;
+
+  --canvas:#140a22; --surface:#1f1131; --surface-2:#281740;
+  --line:#3a2757; --line-strong:#8a6fb0;
+  --ink:#f5eefa; --ink-2:#d9cbe6; --muted:#b3a2c7; --placeholder:#9d8fb3; --faint:#6c5b82;
+  --cream-alpha:245,238,250;
+  --on-dark:#f5eefa;                       /* texto sobre fondos oscuros de marca (barra, bloques destacados) */
+
+  --ok:#8be0b0;   --ok-bg:rgba(139,224,176,.14);  --ok-line:rgba(139,224,176,.35);
+  --warn:#f5c26b; --warn-bg:rgba(245,194,107,.14); --warn-line:rgba(245,194,107,.4);
+  --bad:#f08090;  --bad-bg:rgba(240,128,144,.14); --bad-line:rgba(240,128,144,.4);
+
+  --font-ui:'Montserrat Variable','Montserrat','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-display:'Montserrat Variable','Montserrat','Segoe UI',system-ui,sans-serif;
+  --fs-xs:12px; --fs-sm:13px; --fs-base:14px; --fs-md:15px; --fs-lg:16px; --fs-xl:20px; --fs-2xl:28px; --fs-3xl:32px;
+
+  --r-sm:6px; --r-md:10px; --r-lg:14px; --r-xl:20px;
+  --sh-sm:none;
+  --sh-md:0 12px 30px -14px rgba(0,0,0,.55);
+  --sh-lg:0 30px 70px -18px rgba(0,0,0,.7);
+}
+
+:root[data-theme="light"]{
+  color-scheme: light;
+
   --plum-700:#55277f; --plum-600:#6a3596; --plum-500:#8248b0; --plum-400:#a173c8;
   --plum-300:#c4a4de; --plum-200:#e0d0ef; --plum-100:#efe6f7; --plum-50:#f8f3fc;
-  /* Acentos del logo */
-  --orchid:#e27be0; --blush:#f4a6cf; --lavender:#c9b8f0;
-  /* Superficies y texto */
-  --canvas:#f6f1fa; --surface:#ffffff; --line:#e9def2; --line-strong:#d9c9e8;
-  --ink:#241533; --ink-2:#4a3d5c; --muted:#6e6284; --faint:#a89dba;
-  /* Estados */
-  --ok:#17724c; --ok-bg:#e2f4ea; --ok-line:#b7e0c9;
-  --warn:#8f5a0b; --warn-bg:#fdf0d9; --warn-line:#f3d79c;
-  --bad:#b3304b; --bad-bg:#fce6eb; --bad-line:#f4b9c6;
-  /* Tipografía */
-  --font-ui:'Instrument Sans','Segoe UI',system-ui,-apple-system,sans-serif;
-  --font-display:'Playfair Display',Georgia,'Times New Roman',serif;
-  /* Radios por rol */
-  --r-sm:8px; --r-md:12px; --r-lg:18px; --r-xl:24px;
-  /* Sombras teñidas de ciruela */
-  --sh-sm:0 1px 2px rgba(42,16,69,.05),0 1px 1px rgba(42,16,69,.03);
-  --sh-md:0 10px 28px -10px rgba(42,16,69,.18);
-  --sh-lg:0 30px 70px -18px rgba(29,10,51,.45);
+
+  --orchid:#a03fb8; --blush:#e89ac8; --lavender:#7d5aa6;
+  --gold-grad:linear-gradient(135deg,#8248b0,#6a3596 60%,#55277f);
+  --on-gold:#ffffff;
+
+  --canvas:#f6f1fa; --surface:#ffffff; --surface-2:#f8f3fc;
+  --line:#e9def2; --line-strong:#8e7aa8;
+  --ink:#241533; --ink-2:#4a3d5c; --muted:#6e6284; --placeholder:#7d7294; --faint:#a89dba;
+  --on-dark:#f5eefa;
+
+  --ok:#17724c;   --ok-bg:#e2f4ea;  --ok-line:#b7e0c9;
+  --warn:#9a4a0b; --warn-bg:#fde7d4; --warn-line:#f3c79c;
+  --bad:#b3304b;  --bad-bg:#fce6eb;  --bad-line:#f4b9c6;
+
+  --sh-sm:0 1px 2px rgba(36,21,51,.05);
+  --sh-md:0 10px 28px -10px rgba(36,21,51,.18);
+  --sh-lg:0 30px 70px -18px rgba(20,10,30,.5);
 }
 
-
-/* Tipografía unificada J97 */
-html, body, #root, button, input, textarea, select, option {
-  font-family: var(--font-body, var(--font-primary, "Instrument Sans", "Segoe UI", system-ui, sans-serif));
-}
-.numeric, .price, .amount, .total, .quantity, .stock, .currency, .table-number {
-  font-family: inherit;
-  font-variant-numeric: tabular-nums;
+html, body, #root, button, input, textarea, select, option{ font-family:var(--font-ui); }
+.numeric, .price, .amount, .total, .quantity, .stock, .currency, .table-number{
+  font-family:inherit; font-variant-numeric:tabular-nums;
 }

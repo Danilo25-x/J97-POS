@@ -43,7 +43,7 @@ export default function DashboardPage() {
 
   return (
     <PageContainer
-      title={<>Hola, {firstName} <span aria-hidden="true">👋</span></>}
+      title={<>Hola, {firstName} <span aria-hidden="true"></span></>}
       subtitle="Aquí tienes un resumen de tu tienda hoy."
       action={<span className="hello__date">{today}</span>}
     >

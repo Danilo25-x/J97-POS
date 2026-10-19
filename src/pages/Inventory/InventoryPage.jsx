@@ -7,6 +7,7 @@ import StatsCard       from '../../components/UI/StatsCard'
 import StatusBadge     from '../../components/UI/StatusBadge'
 import SearchBar       from '../../components/UI/SearchBar'
 import PrimaryButton   from '../../components/UI/PrimaryButton'
+import ActionMenu from '../../components/UI/ActionMenu'
 import Toast           from '../../components/UI/Toast'
 import EmptyState      from '../../components/UI/EmptyState'
 import ProductThumb    from '../../components/UI/ProductThumb'
@@ -92,7 +93,6 @@ export default function InventoryPage() {
   return (
     <PageContainer
       title="Inventario"
-      subtitle="Gestión de productos, variantes y stock"
       action={<PrimaryButton onClick={() => { setEditing(null); setFormOpen(true) }}><Plus size={18} /> Nuevo producto</PrimaryButton>}
     >
       <Toast msg={msg} />
@@ -106,9 +106,9 @@ export default function InventoryPage() {
 
       <div className="card card--flush">
         <div className="card__head">
-          <h2 className="card__title">Productos<small>{stats.totalProducts} en total</small></h2>
+          <h2 className="card__title">Productos</h2>
           <div className="toolbar">
-            <SearchBar placeholder="Buscar producto o SKU..." value={search} onChange={e => setSearch(e.target.value)} />
+            <SearchBar placeholder="Buscar producto o código..." value={search} onChange={e => setSearch(e.target.value)} />
             <div className="segmented" role="group" aria-label="Vista">
               <button type="button" aria-pressed={view === 'list'} onClick={() => setView('list')}><List size={16} /> Lista</button>
               <button type="button" aria-pressed={view === 'grid'} onClick={() => setView('grid')}><LayoutGrid size={16} /> Tarjetas</button>
@@ -124,7 +124,7 @@ export default function InventoryPage() {
         ) : view === 'list' ? (
           <div className="tbl-wrap">
             <table className="tbl">
-              <thead><tr><th>Producto</th><th>SKU</th><th className="c">Stock</th><th className="r">Precio de venta</th><th>Estado</th><th className="r">Acciones</th></tr></thead>
+              <thead><tr><th>Producto</th><th>Código</th><th className="c">Stock</th><th className="r">Precio de venta</th><th>Estado</th><th className="r">Acciones</th></tr></thead>
               <tbody>
                 {products.map(p => (
                   <tr key={p.id}>
@@ -138,14 +138,16 @@ export default function InventoryPage() {
                       </div>
                     </td>
                     <td className="mono">{p.sku}</td>
-                    <td className="c"><span className={`stock-pill stock-pill--${pill(p.total_stock, stats.threshold)}`}>{p.total_stock}</span></td>
+                    <td className="c num">{p.total_stock}</td>
                     <td className="r num cell-main">{fmt(p.sale_price)}</td>
                     <td><StatusBadge status={stockStatus(p.total_stock, stats.threshold)} /></td>
                     <td>
                       <div className="row-actions">
-                        <PrimaryButton size="sm" variant="soft" onClick={() => openVariants(p)}><Layers size={15} /> Variantes</PrimaryButton>
-                        <button type="button" className="icon-btn" onClick={() => openEdit(p)} title="Editar" aria-label={`Editar ${p.name}`}><Pencil size={17} /></button>
-                        <button type="button" className="icon-btn icon-btn--danger" onClick={() => setToDelete(p)} title="Desactivar" aria-label={`Desactivar ${p.name}`}><Trash2 size={17} /></button>
+                        <ActionMenu label={`Acciones de ${p.name}`} items={[
+                          { label: 'Variantes', icon: Layers, onSelect: () => openVariants(p) },
+                          { label: 'Editar', icon: Pencil, onSelect: () => openEdit(p) },
+                          { label: 'Desactivar', icon: Trash2, danger: true, onSelect: () => setToDelete(p) },
+                        ]} />
                       </div>
                     </td>
                   </tr>
@@ -168,9 +170,11 @@ export default function InventoryPage() {
                   <div className="pcard__sub">Stock: {p.total_stock}{p.variant_count > 0 && ` · ${p.variant_count} variante(s)`}</div>
                 </div>
                 <div className="pcard__actions">
-                  <PrimaryButton size="sm" variant="soft" onClick={() => openVariants(p)}>Variantes</PrimaryButton>
-                  <button type="button" className="icon-btn" onClick={() => openEdit(p)} aria-label={`Editar ${p.name}`}><Pencil size={17} /></button>
-                  <button type="button" className="icon-btn icon-btn--danger" onClick={() => setToDelete(p)} aria-label={`Desactivar ${p.name}`}><Trash2 size={17} /></button>
+                  <ActionMenu label={`Acciones de ${p.name}`} items={[
+                    { label: 'Variantes', icon: Layers, onSelect: () => openVariants(p) },
+                    { label: 'Editar', icon: Pencil, onSelect: () => openEdit(p) },
+                    { label: 'Desactivar', icon: Trash2, danger: true, onSelect: () => setToDelete(p) },
+                  ]} />
                 </div>
               </article>
             ))}

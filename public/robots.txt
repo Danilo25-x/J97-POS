@@ -1,0 +1,3 @@
+# Sistema interno de la tienda: no debe aparecer en buscadores.
+User-agent: *
+Disallow: /

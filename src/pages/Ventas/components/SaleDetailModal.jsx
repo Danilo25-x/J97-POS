@@ -56,7 +56,7 @@ export default function SaleDetailModal({ saleId, onClose, onCancelled }) {
         <>
           <div className="kv" style={{ gridTemplateColumns: '1fr auto', alignItems: 'center' }}>
             <div>
-              <b style={{ fontFamily: 'var(--font-display)', fontSize: 22, color: 'var(--plum-600)' }}>{sale.invoice_number}</b>
+              <b style={{ fontFamily: 'var(--font-display)', fontSize: 20, color: 'var(--plum-600)' }}>{sale.invoice_number}</b>
               <small style={{ marginTop: 4 }}>{fmtDateMedium(sale.created_at)} · Cajero: {sale.cajero}</small>
             </div>
             <StatusBadge status={STATUS[sale.status] || sale.status} />
