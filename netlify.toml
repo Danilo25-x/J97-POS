@@ -1,4 +1,4 @@
-# Zona Fit Orito POS — publicación en Netlify
+# J97 POS — publicación web en Netlify
 [build]
   # No usar "npm run build": ese script también empaqueta la app de escritorio (Electron).
   command = "npx vite build"
